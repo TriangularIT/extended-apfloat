@@ -1,8 +1,9 @@
 package org.apfloat.internal;
 
 import org.apfloat.ApfloatRuntimeException;
-import org.apfloat.spi.Factor3NTTStepStrategy;
 import org.apfloat.spi.DataStorage;
+import org.apfloat.spi.Factor3NTTStepStrategy;
+
 import static org.apfloat.internal.FloatModConstants.*;
 
 /**

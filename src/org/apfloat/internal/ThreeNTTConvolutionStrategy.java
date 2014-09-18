@@ -2,13 +2,7 @@ package org.apfloat.internal;
 
 import org.apfloat.ApfloatContext;
 import org.apfloat.ApfloatRuntimeException;
-import org.apfloat.spi.BuilderFactory;
-import org.apfloat.spi.CarryCRTStrategy;
-import org.apfloat.spi.ConvolutionStrategy;
-import org.apfloat.spi.NTTStrategy;
-import org.apfloat.spi.NTTConvolutionStepStrategy;
-import org.apfloat.spi.DataStorageBuilder;
-import org.apfloat.spi.DataStorage;
+import org.apfloat.spi.*;
 
 /**
  * Convolution using three Number Theoretic Transforms

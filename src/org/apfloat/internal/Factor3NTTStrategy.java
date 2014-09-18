@@ -2,9 +2,9 @@ package org.apfloat.internal;
 
 import org.apfloat.ApfloatContext;
 import org.apfloat.ApfloatRuntimeException;
-import org.apfloat.spi.NTTStrategy;
-import org.apfloat.spi.Factor3NTTStepStrategy;
 import org.apfloat.spi.DataStorage;
+import org.apfloat.spi.Factor3NTTStepStrategy;
+import org.apfloat.spi.NTTStrategy;
 import org.apfloat.spi.Util;
 
 /**

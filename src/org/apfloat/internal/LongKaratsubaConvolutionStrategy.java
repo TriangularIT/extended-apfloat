@@ -2,8 +2,8 @@ package org.apfloat.internal;
 
 import org.apfloat.ApfloatContext;
 import org.apfloat.ApfloatRuntimeException;
-import org.apfloat.spi.DataStorageBuilder;
 import org.apfloat.spi.DataStorage;
+import org.apfloat.spi.DataStorageBuilder;
 
 /**
  * Convolution strategy using the Karatsuba algorithm.

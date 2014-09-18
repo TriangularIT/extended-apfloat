@@ -1,8 +1,8 @@
 package org.apfloat.internal;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.apfloat.spi.Util;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Abstract class for a <code>Runnable</code> that can be run in parallel by

@@ -2,7 +2,9 @@ package org.apfloat.internal;
 
 import org.apfloat.spi.ConvolutionStrategy;
 import org.apfloat.spi.NTTStrategy;
-import static org.apfloat.internal.IntConstants.*;
+
+import static org.apfloat.internal.IntConstants.KARATSUBA_COST_FACTOR;
+import static org.apfloat.internal.IntConstants.NTT_COST_FACTOR;
 
 /**
  * Creates convolutions of suitable type for the <code>int</code> type.<p>

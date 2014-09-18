@@ -1,10 +1,11 @@
 package org.apfloat.internal;
 
-import java.io.Serializable;
-
 import org.apfloat.ApfloatRuntimeException;
 import org.apfloat.spi.DataStorage;
-import static org.apfloat.internal.LongRadixConstants.*;
+
+import java.io.Serializable;
+
+import static org.apfloat.internal.LongRadixConstants.BASE;
 
 /**
  * Mathematical operations on numbers in a base.

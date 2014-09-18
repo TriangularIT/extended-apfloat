@@ -1,17 +1,13 @@
 package org.apfloat;
 
-import java.math.BigInteger;
-import java.math.BigDecimal;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PushbackReader;
-import java.io.Writer;
-import java.io.IOException;
-
 import org.apfloat.spi.ApfloatBuilder;
 import org.apfloat.spi.ApfloatImpl;
 import org.apfloat.spi.Util;
+
+import java.io.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import static org.apfloat.spi.RadixConstants.*;
 
 /**

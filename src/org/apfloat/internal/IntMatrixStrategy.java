@@ -2,8 +2,8 @@ package org.apfloat.internal;
 
 import org.apfloat.ApfloatContext;
 import org.apfloat.ApfloatRuntimeException;
-import org.apfloat.spi.MatrixStrategy;
 import org.apfloat.spi.ArrayAccess;
+import org.apfloat.spi.MatrixStrategy;
 import org.apfloat.spi.Util;
 
 /**

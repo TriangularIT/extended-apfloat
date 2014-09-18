@@ -1,13 +1,13 @@
 package org.apfloat.internal;
 
+import org.apfloat.ApfloatRuntimeException;
+import org.apfloat.spi.ArrayAccess;
+import org.apfloat.spi.DataStorage;
+
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
-
-import org.apfloat.ApfloatRuntimeException;
-import org.apfloat.spi.DataStorage;
-import org.apfloat.spi.ArrayAccess;
 
 /**
  * Disk-based data storage for the <code>int</code> element type.

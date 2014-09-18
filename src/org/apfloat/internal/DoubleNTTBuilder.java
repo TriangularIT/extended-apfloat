@@ -1,9 +1,9 @@
 package org.apfloat.internal;
 
-import org.apfloat.spi.NTTStrategy;
-import org.apfloat.spi.NTTStepStrategy;
 import org.apfloat.spi.Factor3NTTStepStrategy;
 import org.apfloat.spi.NTTConvolutionStepStrategy;
+import org.apfloat.spi.NTTStepStrategy;
+import org.apfloat.spi.NTTStrategy;
 
 /**
  * Creates Number Theoretic Transforms for the

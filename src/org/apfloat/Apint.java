@@ -1,15 +1,16 @@
 package org.apfloat;
 
-import java.math.BigInteger;
+import org.apfloat.spi.ApfloatImpl;
+
+import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.Writer;
-import java.io.IOException;
+import java.math.BigInteger;
+import java.util.FormatFlagsConversionMismatchException;
 import java.util.Formatter;
-import static java.util.FormattableFlags.*;
-import java.util.FormatFlagsConversionMismatchException ;
 import java.util.IllegalFormatPrecisionException;
 
-import org.apfloat.spi.ApfloatImpl;
+import static java.util.FormattableFlags.ALTERNATE;
 
 /**
  * Arbitrary precision integer class.<p>

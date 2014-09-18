@@ -1,14 +1,14 @@
 package org.apfloat.internal;
 
+import org.apfloat.ApfloatContext;
+import org.apfloat.spi.NTTStrategy;
+
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import org.apfloat.ApfloatContext;
-import org.apfloat.spi.NTTStrategy;
 
 /**
  * Convolution using three Number Theoretic Transforms

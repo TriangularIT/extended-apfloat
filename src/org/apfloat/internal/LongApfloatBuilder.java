@@ -1,11 +1,11 @@
 package org.apfloat.internal;
 
-import java.io.PushbackReader;
-import java.io.IOException;
-
 import org.apfloat.ApfloatRuntimeException;
 import org.apfloat.spi.ApfloatBuilder;
 import org.apfloat.spi.ApfloatImpl;
+
+import java.io.IOException;
+import java.io.PushbackReader;
 
 /**
  * Builder class for building {@link ApfloatImpl} implementations with the

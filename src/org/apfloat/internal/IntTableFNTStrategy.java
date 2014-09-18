@@ -1,11 +1,13 @@
 package org.apfloat.internal;
 
 import org.apfloat.ApfloatRuntimeException;
-import org.apfloat.spi.NTTStrategy;
-import org.apfloat.spi.DataStorage;
 import org.apfloat.spi.ArrayAccess;
+import org.apfloat.spi.DataStorage;
+import org.apfloat.spi.NTTStrategy;
 import org.apfloat.spi.Util;
-import static org.apfloat.internal.IntModConstants.*;
+
+import static org.apfloat.internal.IntModConstants.MAX_TRANSFORM_LENGTH;
+import static org.apfloat.internal.IntModConstants.MODULUS;
 
 /**
  * Fast Number Theoretic Transform strategy that uses lookup tables

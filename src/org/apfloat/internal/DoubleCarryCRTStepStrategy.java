@@ -1,11 +1,13 @@
 package org.apfloat.internal;
 
-import java.math.BigInteger;
-
 import org.apfloat.ApfloatRuntimeException;
 import org.apfloat.spi.CarryCRTStepStrategy;
 import org.apfloat.spi.DataStorage;
-import static org.apfloat.internal.DoubleModConstants.*;
+
+import java.math.BigInteger;
+
+import static org.apfloat.internal.DoubleModConstants.MAX_POWER_OF_TWO_BASE;
+import static org.apfloat.internal.DoubleModConstants.MODULUS;
 
 /**
  * Class for performing the final steps of a three-modulus

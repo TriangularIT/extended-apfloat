@@ -1,13 +1,13 @@
 package org.apfloat.internal;
 
+import org.apfloat.ApfloatRuntimeException;
+import org.apfloat.spi.ArrayAccess;
+import org.apfloat.spi.DataStorage;
+
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
-
-import org.apfloat.ApfloatRuntimeException;
-import org.apfloat.spi.DataStorage;
-import org.apfloat.spi.ArrayAccess;
 
 /**
  * Disk-based data storage for the <code>long</code> element type.

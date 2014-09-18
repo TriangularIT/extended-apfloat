@@ -2,8 +2,8 @@ package org.apfloat.internal;
 
 import org.apfloat.ApfloatContext;
 import org.apfloat.ApfloatRuntimeException;
-import org.apfloat.spi.DataStorageBuilder;
 import org.apfloat.spi.DataStorage;
+import org.apfloat.spi.DataStorageBuilder;
 
 /**
  * Abstract base class for a data storage creation strategy.

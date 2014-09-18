@@ -1,11 +1,7 @@
 package org.apfloat.internal;
 
 import org.apfloat.ApfloatContext;
-import org.apfloat.spi.ConvolutionBuilder;
-import org.apfloat.spi.ConvolutionStrategy;
-import org.apfloat.spi.NTTBuilder;
-import org.apfloat.spi.NTTStrategy;
-import org.apfloat.spi.Util;
+import org.apfloat.spi.*;
 
 /**
  * Abstract base class for creating convolutions of suitable type for the specified length.<p>

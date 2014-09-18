@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
-import org.apfloat.internal.DoubleModMath;
-import static org.apfloat.internal.DoubleModConstants.*;
+import static org.apfloat.internal.DoubleModConstants.MODULUS;
+import static org.apfloat.internal.DoubleModConstants.PRIMITIVE_ROOT;
 
 /**
  * Helper class for generating and caching tables of powers of the n:th root of unity.

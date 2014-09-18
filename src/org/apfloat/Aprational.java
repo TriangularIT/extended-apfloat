@@ -1,15 +1,16 @@
 package org.apfloat;
 
-import java.math.BigInteger;
+import org.apfloat.spi.ApfloatImpl;
+
+import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.Writer;
-import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.math.BigInteger;
 import java.util.Formatter;
-import static java.util.FormattableFlags.*;
 
-import org.apfloat.spi.ApfloatImpl;
-import static org.apfloat.spi.RadixConstants.*;
+import static java.util.FormattableFlags.LEFT_JUSTIFY;
+import static org.apfloat.spi.RadixConstants.RADIX_FACTORS;
 
 /**
  * Arbitrary precision rational number class. An aprational consists of

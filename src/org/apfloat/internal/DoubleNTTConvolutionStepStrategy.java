@@ -1,9 +1,10 @@
 package org.apfloat.internal;
 
 import org.apfloat.ApfloatRuntimeException;
-import org.apfloat.spi.NTTConvolutionStepStrategy;
 import org.apfloat.spi.DataStorage;
-import static org.apfloat.internal.DoubleModConstants.*;
+import org.apfloat.spi.NTTConvolutionStepStrategy;
+
+import static org.apfloat.internal.DoubleModConstants.MODULUS;
 
 /**
  * Steps of a three-NTT convolution for the <code>double</code> type.

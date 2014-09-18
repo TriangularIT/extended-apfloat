@@ -1,8 +1,8 @@
 package org.apfloat.internal;
 
 import org.apfloat.spi.CarryCRTBuilder;
-import org.apfloat.spi.CarryCRTStrategy;
 import org.apfloat.spi.CarryCRTStepStrategy;
+import org.apfloat.spi.CarryCRTStrategy;
 
 /**
  * Creates carry-CRT related objects, for the

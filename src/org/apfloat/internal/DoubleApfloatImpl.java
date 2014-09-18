@@ -1,27 +1,12 @@
 package org.apfloat.internal;
 
-import java.io.ObjectInputStream;
-import java.io.PushbackReader;
-import java.io.Writer;
-import java.io.StringWriter;
-import java.io.IOException;
+import org.apfloat.*;
+import org.apfloat.spi.*;
 
-import org.apfloat.Apfloat;
-import org.apfloat.ApfloatContext;
-import org.apfloat.ApfloatRuntimeException;
-import org.apfloat.InfiniteExpansionException;
-import org.apfloat.OverflowException;
-import org.apfloat.spi.ApfloatImpl;
-import org.apfloat.spi.DataStorageBuilder;
-import org.apfloat.spi.DataStorage;
-import org.apfloat.spi.ArrayAccess;
-import org.apfloat.spi.AdditionBuilder;
-import org.apfloat.spi.AdditionStrategy;
-import org.apfloat.spi.ConvolutionBuilder;
-import org.apfloat.spi.ConvolutionStrategy;
-import org.apfloat.spi.Util;
-import static org.apfloat.spi.RadixConstants.*;
+import java.io.*;
+
 import static org.apfloat.internal.DoubleRadixConstants.*;
+import static org.apfloat.spi.RadixConstants.RADIX_FACTORS;
 
 /**
  * Immutable apfloat implementation class for the

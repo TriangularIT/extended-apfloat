@@ -1,14 +1,15 @@
 package org.apfloat;
 
-import java.math.BigInteger;
-import java.math.BigDecimal;
+import org.apfloat.spi.ApfloatImpl;
+
+import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.Writer;
-import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Formatter;
-import static java.util.FormattableFlags.*;
 
-import org.apfloat.spi.ApfloatImpl;
+import static java.util.FormattableFlags.*;
 
 /**
  * Arbitrary precision floating-point number class.<p>

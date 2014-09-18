@@ -1,12 +1,12 @@
 package org.apfloat.internal;
 
+import org.apfloat.ApfloatContext;
+import org.apfloat.ApfloatRuntimeException;
+
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-
-import org.apfloat.ApfloatContext;
-import org.apfloat.ApfloatRuntimeException;
 
 /**
  * Class for running <code>ParallelRunnable</code> objects in parallel using

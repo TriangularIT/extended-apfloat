@@ -1,7 +1,8 @@
 package org.apfloat.internal;
 
-import static org.apfloat.internal.LongModConstants.*;
-import static org.apfloat.internal.LongRadixConstants.*;
+import static org.apfloat.internal.LongModConstants.MAX_POWER_OF_TWO_BASE;
+import static org.apfloat.internal.LongModConstants.MAX_POWER_OF_TWO_BITS;
+import static org.apfloat.internal.LongRadixConstants.BASE;
 
 /**
  * Basic arithmetic for calculating the Chinese Remainder

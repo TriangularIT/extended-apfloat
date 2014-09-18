@@ -3,6 +3,7 @@ package org.apfloat.internal;
 import org.apfloat.ApfloatRuntimeException;
 import org.apfloat.spi.ArrayAccess;
 import org.apfloat.spi.NTTStepStrategy;
+
 import static org.apfloat.internal.DoubleModConstants.*;
 
 /**

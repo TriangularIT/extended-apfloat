@@ -2,7 +2,9 @@ package org.apfloat.internal;
 
 import org.apfloat.spi.ConvolutionStrategy;
 import org.apfloat.spi.NTTStrategy;
-import static org.apfloat.internal.LongConstants.*;
+
+import static org.apfloat.internal.LongConstants.KARATSUBA_COST_FACTOR;
+import static org.apfloat.internal.LongConstants.NTT_COST_FACTOR;
 
 /**
  * Creates convolutions of suitable type for the <code>long</code> type.<p>

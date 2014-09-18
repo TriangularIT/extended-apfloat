@@ -1,9 +1,9 @@
 package org.apfloat.internal;
 
-import java.util.Map;
-import java.util.HashMap;
-
 import org.apfloat.ApfloatRuntimeException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Message passing helper class for parallel codes.
