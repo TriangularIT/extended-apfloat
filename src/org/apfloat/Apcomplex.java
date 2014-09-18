@@ -645,6 +645,19 @@ public class Apcomplex
     }
 
     /**
+     * Determines whether {@code this} apcomplex is "essentially" equal to the {@code other}. Here "essentially" means that the difference between the two numbers vanishes in the lower precision of the two numbers.
+     * @param other The other number to compare to.
+     * @return {@code true} if the two number are "essentially" equal, {@code false} otherwise.
+     */
+    public boolean is(Apcomplex other) {
+        if(precision() > other.precision())
+            return other.is(this);
+
+        other = other.precision(precision());
+        return subtract(other).equals(ZERO);
+    }
+
+    /**
      * Compares this object to the specified object.<p>
      *
      * Note: two apfloats are considered equal if they have an identical mantissa,
