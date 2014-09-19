@@ -10,7 +10,7 @@ public class ApfloatTest {
 
     @BeforeTest
     private void setUp() {
-        Apfloat oneNinth = new Aprational(Apint.ONE, new Apint(9)).precision(30);
+        Apfloat oneNinth = new Aprational(1, 9).precision(30);
         nineNinths = Apfloat.ZERO;
 
         for(int i = 0; i < 9; i++) {

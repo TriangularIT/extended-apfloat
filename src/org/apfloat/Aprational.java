@@ -67,6 +67,10 @@ public class Aprational
         reduce();
     }
 
+    public Aprational(long numerator, long denominator) {
+        this(new Apint(numerator), new Apint(denominator));
+    }
+
     /**
      * Constructs an aprational from a string. The default radix is used.<p>
      *
