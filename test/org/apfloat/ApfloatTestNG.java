@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
-public class ApfloatTest {
+public class ApfloatTestNG {
     Apfloat nineNinths;
     Apfloat[] nums = new Apfloat[] {
             new Apfloat(".5"),
