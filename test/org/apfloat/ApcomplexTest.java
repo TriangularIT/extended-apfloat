@@ -1,21 +1,33 @@
 package org.apfloat;
 
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 public class ApcomplexTest {
+    Apfloat nineNinths;
 
-    @Test
-    public void testIs() throws Exception {
+    @BeforeTest
+    private void setUp() {
         Apfloat oneNinth = new Aprational(Apint.ONE, new Apint(9)).precision(30);
-        Apfloat nineNinths = Apfloat.ZERO;
+        nineNinths = Apfloat.ZERO;
 
         for(int i = 0; i < 9; i++) {
             nineNinths = nineNinths.add(oneNinth);
         }
+    }
 
+    @Test
+    public void testClean() throws Exception {
+        assertEquals(nineNinths.clean(), Apfloat.ONE);
+        assertEquals(nineNinths.multiply(new Apfloat("1e100", 30)).clean(), new Apfloat("1e100"));
+        assertFalse(new Apfloat(".99").clean().equals(Apfloat.ONE));
+        assertEquals(new Apfloat(".999").clean(), Apfloat.ONE);
+    }
+
+    @Test
+    public void testIs() throws Exception {
         assertFalse(nineNinths.equals(Apfloat.ONE));
         assertTrue(nineNinths.is(Apfloat.ONE));
     }

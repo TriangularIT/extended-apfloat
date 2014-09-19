@@ -493,6 +493,18 @@ public class Apcomplex
     }
 
     /**
+     * Attempts to "clean" {@code this} apcomplex. This is achieved by cleaning both the {@link #real() real} and {@link #imag() imaginary} part of {@code this} apcomplex.
+     * @see Apfloat#clean()
+     * @return A cleaned copy of {@code this}.
+     */
+    public Apcomplex clean() {
+        return new Apcomplex(
+                real.clean(),
+                imag.clean()
+        );
+    }
+
+    /**
      * Returns the value of the this number as a <code>double</code>.
      * Only takes the real part of this number.
      *

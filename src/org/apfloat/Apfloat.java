@@ -872,6 +872,23 @@ public class Apfloat
     }
 
     /**
+     * Attempts to "clean" {@code this} apfloat. This is achieved by trying to add or subtract one <em>epsilon</em> &ndash; which is defined as the least unit representable in {@code this}' {@link #precision() precision} &ndash; and comparing whether the {@link #size() size} has changed significantly &ndash; i.e. at least by 2.
+     * @return A cleaned copy of {@code this}, or {@code this} if a cleaning was not possible.
+     */
+    @Override
+    public Apfloat clean() {
+        if(precision() == Apfloat.INFINITE)
+            return this;
+
+        Apfloat delta = ApfloatMath.pow(new Apfloat(radix(), precision()), scale() - precision());
+        if(add(delta).size() < size() - 1)
+            return add(delta).precision(precision());
+        if(subtract(delta).size() < size() - 1)
+            return subtract(delta).precision(precision());
+        return this;
+    }
+
+    /**
      * Returns the value of the this number as a <code>double</code>.
      * If the number is too big to fit in a <code>double</code>,
      * <code>Double.POSITIVE_INFINITY</code> or
