@@ -71,9 +71,10 @@ public class Aprational
      * Constructs an aprational from a string. The default radix is used.<p>
      *
      * The input must be of one of the formats<p>
-     *
-     * <code>integer</code><br>
-     * <code>numerator [whitespace] "/" [whitespace] denominator</code><br>
+     * <ul>
+     * <li>Any format {@link org.apfloat.Apfloat#Apfloat(String)} accepts, or</li>
+     * <li><code>numerator [whitespace] "/" [whitespace] denominator</code></li>
+     * </ul>
      *
      * @param value The input string.
      *
@@ -91,9 +92,10 @@ public class Aprational
      * Constructs an aprational from a string with the specified radix.<p>
      *
      * The input must be of one of the formats<p>
-     *
-     * <code>integer</code><br>
-     * <code>numerator [whitespace] "/" [whitespace] denominator</code><br>
+     * <ul>
+     * <li>Any format {@link org.apfloat.Apfloat#Apfloat(String)} accepts, or</li>
+     * <li><code>numerator [whitespace] "/" [whitespace] denominator</code></li>
+     * </ul>
      *
      * @param value The input string.
      * @param radix The radix to be used.
@@ -108,17 +110,69 @@ public class Aprational
         int index = value.indexOf('/');
         if (index < 0)
         {
-            this.numerator = new Apint(value, radix);
-            this.denominator = ONES[radix];
-            return;
+            index = value.indexOf('.');
+            if(index < 0) {
+                this.numerator = new Apint(value, radix);
+                this.denominator = ONES[radix];
+                return;
+            }
+            else {
+                copy(fromApfloat(new Apfloat(value).toRadix(radix)));
+            }
         }
+        else {
+            this.numerator = new Apint(value.substring(0, index).trim(), radix);
+            this.denominator = new Apint(value.substring(index + 1).trim(), radix);
 
-        this.numerator = new Apint(value.substring(0, index).trim(), radix);
-        this.denominator = new Apint(value.substring(index + 1).trim(), radix);
+            checkDenominator();
 
-        checkDenominator();
+            reduce();
+        }
+    }
 
-        reduce();
+    /**
+     * <p>
+     *     Constructs an aprational from an apfloat. If the input is an aprational itself the result will be a copy of the argument. If the argument is a "true" Apfloat the result will be basically all the digits of the argument divided by an appropriate power of the argument's {@link Apfloat#radix() radix}.
+     * </p>
+     * <p>
+     *     The radix is copied from the argument.
+     * </p>
+     *
+     * @param value The value of the rational.
+     *
+     * @exception java.lang.IllegalArgumentException In case the passed argument is an instance of {@code Aprational} and its {@link #denominator()} is zero.
+     */
+    public Aprational(Apfloat value) throws IllegalArgumentException {
+        if(value instanceof Aprational) {
+            Aprational ar = (Aprational) value;
+            this.numerator = ar.numerator();
+            this.denominator = ar.denominator();
+
+            checkDenominator();
+
+            reduce();
+        }
+        else {
+            copy(fromApfloat(value));
+        }
+    }
+
+    // Constructs an aprational from a "true" apfloat – see Aprational(Apfloat)
+    private static Aprational fromApfloat(Apfloat value) {
+        Apint denom = ApintMath.pow(new Apint(value.radix()), Math.max(value.size() - value.scale(), 0)).toRadix(value.radix());
+        Apint num = value.multiply(denom).floor().toRadix(value.radix());
+
+        return new Aprational(num, denom);
+    }
+
+    // Copies the values of another apratoinal
+    // NOTE: the method mutates this object, so it must only be called for newly constructed aprationals
+    // Returns this, for convenience
+    private Aprational copy(Aprational other) {
+        this.numerator = other.numerator();
+        this.denominator = other.denominator();
+
+        return this;
     }
 
     /**
@@ -128,9 +182,10 @@ public class Aprational
      * returned back to the stream.<p>
      *
      * The input must be of one of the formats<p>
-     *
-     * <code>integer [whitespace]</code><br>
-     * <code>numerator [whitespace] "/" [whitespace] denominator</code><br>
+     * <ul>
+     * <li>Any stream accepted by {@link org.apfloat.Apfloat#Apfloat(java.io.PushbackReader)} or</li>
+     * <li><code>numerator [whitespace] "/" [whitespace] denominator</code></li>
+     * </ul>
      *
      * @param in The input stream.
      *
@@ -161,22 +216,28 @@ public class Aprational
     public Aprational(PushbackReader in, int radix)
         throws IOException, NumberFormatException, IllegalArgumentException, ApfloatRuntimeException
     {
-        this.numerator = new Apint(in, radix);
+        Apfloat value = new Apfloat(in).toRadix(radix);
 
-        ApfloatHelper.extractWhitespace(in);
+        if(value.frac().equals(ZERO)) {
+            this.numerator = value.truncate();
 
-        if (!ApfloatHelper.readMatch(in, '/'))
-        {
-            this.denominator = ONES[radix];
-            return;
+            ApfloatHelper.extractWhitespace(in);
+
+            if(!ApfloatHelper.readMatch(in, '/')) {
+                this.denominator = ONES[radix];
+                return;
+            }
+
+            ApfloatHelper.extractWhitespace(in);
+            this.denominator = new Apint(in, radix);
+
+            checkDenominator();
+
+            reduce();
         }
-
-        ApfloatHelper.extractWhitespace(in);
-        this.denominator = new Apint(in, radix);
-
-        checkDenominator();
-
-        reduce();
+        else {
+            copy(fromApfloat(value));
+        }
     }
 
     /**
