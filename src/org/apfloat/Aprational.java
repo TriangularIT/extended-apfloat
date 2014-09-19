@@ -461,6 +461,14 @@ public class Aprational
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Apfloat reciprocal() throws ArithmeticException {
+        return new Aprational(denominator(), numerator());
+    }
+
+    /**
      * Adds two aprational numbers.
      *
      * @param x The number to be added to this number.
@@ -476,6 +484,24 @@ public class Aprational
     }
 
     /**
+     * Adds an apfloat to {@code this}. If the argument is an {@code Aprational}, then {@link #add(Aprational)} is called; if it has {@link Apfloat#INFINITE infinite} {@link Apfloat#precision() precision} it is converted to an {@code Aprational} like in {@link #Aprational(Apfloat)} and later {@link #add(Aprational) added}; if it is a "true" Apfloat {@code this} is reduced to its {@link Apfloat#precision() precision} and the two are {@link Apfloat#add(Apfloat) added} together.
+     * @param x The number to be added to this number.
+     *
+     * @return {@code this + x}
+     * @throws ApfloatRuntimeException
+     */
+    @Override
+    public Apfloat add(Apfloat x) throws ApfloatRuntimeException {
+        if(x instanceof Aprational) {
+            return add((Aprational) x);
+        }
+        if(x.precision() == INFINITE) {
+            return add(fromApfloat(x));
+        }
+        return precision(x.precision()).add(x);
+    }
+
+    /**
      * Subtracts two aprational numbers.
      *
      * @param x The number to be subtracted from this number.
@@ -488,6 +514,25 @@ public class Aprational
     {
         return new Aprational(numerator().multiply(x.denominator()).subtract(denominator().multiply(x.numerator())),
                               denominator().multiply(x.denominator())).reduce();
+    }
+
+    /**
+     * Subtracts an apfloat from {@code this}.
+     * @param x The number to be subtracted from this number.
+     *
+     * @return {@code this - x}
+     * @throws ApfloatRuntimeException
+     * @see #add(Apfloat)
+     */
+    @Override
+    public Apfloat subtract(Apfloat x) throws ApfloatRuntimeException {
+        if(x instanceof Aprational) {
+            return subtract((Aprational) x);
+        }
+        if(x.precision() == INFINITE) {
+            return subtract(fromApfloat(x));
+        }
+        return precision(x.precision()).subtract(x);
     }
 
     /**
@@ -516,6 +561,25 @@ public class Aprational
     }
 
     /**
+     * Multiplies {@code this} with an apfloat.
+     * @param x The number to be multiplied by this number.
+     *
+     * @return {@code this * x}
+     * @throws ApfloatRuntimeException
+     * @see #add(Apfloat)
+     */
+    @Override
+    public Apfloat multiply(Apfloat x) throws ApfloatRuntimeException {
+        if(x instanceof Aprational) {
+            return multiply((Aprational) x);
+        }
+        if(x.precision() == INFINITE) {
+            return multiply(fromApfloat(x));
+        }
+        return precision(x.precision()).multiply(x);
+    }
+
+    /**
      * Divides two aprational numbers.
      *
      * @param x The number by which this number is to be divided.
@@ -541,6 +605,43 @@ public class Aprational
 
         return new Aprational(numerator().multiply(x.denominator()),
                               denominator().multiply(x.numerator())).reduce();
+    }
+
+    /**
+     * Divides {@code this} by an apfloat.
+     * @param x The number by which this number is to be divided.
+     *
+     * @return {@code this / x}
+     * @throws ArithmeticException if {@code x} is zero
+     * @throws ApfloatRuntimeException
+     * @see #add(Apfloat)
+     */
+    @Override
+    public Apfloat divide(Apfloat x) throws ArithmeticException, ApfloatRuntimeException {
+        if(x instanceof Aprational) {
+            return divide((Aprational) x);
+        }
+        if(x.precision() == INFINITE) {
+            return divide(fromApfloat(x));
+        }
+        return precision(x.precision()).divide(x);
+    }
+
+    /**
+     * Divides an apfloat by {@code this}
+     * @param x The number which is to be divided by this
+     * @return {@code x / this}
+     * @throws ArithmeticException if this is zero
+     * @throws ApfloatRuntimeException
+     */
+    public Apfloat reciprocalDivide(Apfloat x) throws ArithmeticException, ApfloatRuntimeException {
+        if(x instanceof Aprational) {
+            return x.divide(this);
+        }
+        if(x.precision() == INFINITE) {
+            return fromApfloat(x).divide(this);
+        }
+        return x.divide(precision(x.precision()));
     }
 
     /**
