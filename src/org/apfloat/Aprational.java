@@ -67,13 +67,18 @@ public class Aprational
         reduce();
     }
 
+    public Aprational(long numerator, long denominator) {
+        this(new Apint(numerator), new Apint(denominator));
+    }
+
     /**
      * Constructs an aprational from a string. The default radix is used.<p>
      *
      * The input must be of one of the formats<p>
-     *
-     * <code>integer</code><br>
-     * <code>numerator [whitespace] "/" [whitespace] denominator</code><br>
+     * <ul>
+     * <li>Any format {@link org.apfloat.Apfloat#Apfloat(String)} accepts, or</li>
+     * <li><code>numerator [whitespace] "/" [whitespace] denominator</code></li>
+     * </ul>
      *
      * @param value The input string.
      *
@@ -91,9 +96,10 @@ public class Aprational
      * Constructs an aprational from a string with the specified radix.<p>
      *
      * The input must be of one of the formats<p>
-     *
-     * <code>integer</code><br>
-     * <code>numerator [whitespace] "/" [whitespace] denominator</code><br>
+     * <ul>
+     * <li>Any format {@link org.apfloat.Apfloat#Apfloat(String)} accepts, or</li>
+     * <li><code>numerator [whitespace] "/" [whitespace] denominator</code></li>
+     * </ul>
      *
      * @param value The input string.
      * @param radix The radix to be used.
@@ -108,17 +114,72 @@ public class Aprational
         int index = value.indexOf('/');
         if (index < 0)
         {
-            this.numerator = new Apint(value, radix);
-            this.denominator = ONES[radix];
-            return;
+            index = value.indexOf('.');
+            if(index < 0) {
+                this.numerator = new Apint(value, radix);
+                this.denominator = ONES[radix];
+                return;
+            }
+            else {
+                copy(fromApfloat(new Apfloat(value).toRadix(radix)));
+            }
         }
+        else {
+            this.numerator = new Apint(value.substring(0, index).trim(), radix);
+            this.denominator = new Apint(value.substring(index + 1).trim(), radix);
 
-        this.numerator = new Apint(value.substring(0, index).trim(), radix);
-        this.denominator = new Apint(value.substring(index + 1).trim(), radix);
+            checkDenominator();
 
-        checkDenominator();
+            reduce();
+        }
+    }
 
-        reduce();
+    /**
+     * <p>
+     *     Constructs an aprational from an apfloat. If the input is an aprational itself the result will be a copy of the argument. If the argument is a "true" Apfloat the result will be basically all the digits of the argument divided by an appropriate power of the argument's {@link Apfloat#radix() radix}.
+     * </p>
+     * <p>
+     *     The radix is copied from the argument.
+     * </p>
+     *
+     * @param value The value of the rational.
+     *
+     * @exception java.lang.IllegalArgumentException In case the passed argument is an instance of {@code Aprational} and its {@link #denominator()} is zero.
+     */
+    public Aprational(Apfloat value) throws IllegalArgumentException {
+        if(value instanceof Aprational) {
+            Aprational ar = (Aprational) value;
+            this.numerator = ar.numerator();
+            this.denominator = ar.denominator();
+
+            checkDenominator();
+
+            reduce();
+        }
+        else {
+            copy(fromApfloat(value));
+        }
+    }
+
+    // Constructs an aprational from a "true" apfloat – see Aprational(Apfloat)
+    private static Aprational fromApfloat(Apfloat value) {
+        if(value.signum() == 0)
+            return ZERO;
+
+        Apint denom = ApintMath.pow(new Apint(value.radix()), Math.max(value.size() - value.scale(), 0)).toRadix(value.radix());
+        Apint num = value.multiply(denom).floor().toRadix(value.radix());
+
+        return new Aprational(num, denom);
+    }
+
+    // Copies the values of another apratoinal
+    // NOTE: the method mutates this object, so it must only be called for newly constructed aprationals
+    // Returns this, for convenience
+    private Aprational copy(Aprational other) {
+        this.numerator = other.numerator();
+        this.denominator = other.denominator();
+
+        return this;
     }
 
     /**
@@ -128,9 +189,10 @@ public class Aprational
      * returned back to the stream.<p>
      *
      * The input must be of one of the formats<p>
-     *
-     * <code>integer [whitespace]</code><br>
-     * <code>numerator [whitespace] "/" [whitespace] denominator</code><br>
+     * <ul>
+     * <li>Any stream accepted by {@link org.apfloat.Apfloat#Apfloat(java.io.PushbackReader)} or</li>
+     * <li><code>numerator [whitespace] "/" [whitespace] denominator</code></li>
+     * </ul>
      *
      * @param in The input stream.
      *
@@ -161,22 +223,28 @@ public class Aprational
     public Aprational(PushbackReader in, int radix)
         throws IOException, NumberFormatException, IllegalArgumentException, ApfloatRuntimeException
     {
-        this.numerator = new Apint(in, radix);
+        Apfloat value = new Apfloat(in).toRadix(radix);
 
-        ApfloatHelper.extractWhitespace(in);
+        if(value.frac().equals(ZERO)) {
+            this.numerator = value.truncate();
 
-        if (!ApfloatHelper.readMatch(in, '/'))
-        {
-            this.denominator = ONES[radix];
-            return;
+            ApfloatHelper.extractWhitespace(in);
+
+            if(!ApfloatHelper.readMatch(in, '/')) {
+                this.denominator = ONES[radix];
+                return;
+            }
+
+            ApfloatHelper.extractWhitespace(in);
+            this.denominator = new Apint(in, radix);
+
+            checkDenominator();
+
+            reduce();
         }
-
-        ApfloatHelper.extractWhitespace(in);
-        this.denominator = new Apint(in, radix);
-
-        checkDenominator();
-
-        reduce();
+        else {
+            copy(fromApfloat(value));
+        }
     }
 
     /**
@@ -393,6 +461,14 @@ public class Aprational
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Apfloat reciprocal() throws ArithmeticException {
+        return new Aprational(denominator(), numerator());
+    }
+
+    /**
      * Adds two aprational numbers.
      *
      * @param x The number to be added to this number.
@@ -408,6 +484,24 @@ public class Aprational
     }
 
     /**
+     * Adds an apfloat to {@code this}. If the argument is an {@code Aprational}, then {@link #add(Aprational)} is called; if it has {@link Apfloat#INFINITE infinite} {@link Apfloat#precision() precision} it is converted to an {@code Aprational} like in {@link #Aprational(Apfloat)} and later {@link #add(Aprational) added}; if it is a "true" Apfloat {@code this} is reduced to its {@link Apfloat#precision() precision} and the two are {@link Apfloat#add(Apfloat) added} together.
+     * @param x The number to be added to this number.
+     *
+     * @return {@code this + x}
+     * @throws ApfloatRuntimeException
+     */
+    @Override
+    public Apfloat add(Apfloat x) throws ApfloatRuntimeException {
+        if(x instanceof Aprational) {
+            return add((Aprational) x);
+        }
+        if(x.precision() == INFINITE) {
+            return add(fromApfloat(x));
+        }
+        return precision(x.precision()).add(x);
+    }
+
+    /**
      * Subtracts two aprational numbers.
      *
      * @param x The number to be subtracted from this number.
@@ -420,6 +514,25 @@ public class Aprational
     {
         return new Aprational(numerator().multiply(x.denominator()).subtract(denominator().multiply(x.numerator())),
                               denominator().multiply(x.denominator())).reduce();
+    }
+
+    /**
+     * Subtracts an apfloat from {@code this}.
+     * @param x The number to be subtracted from this number.
+     *
+     * @return {@code this - x}
+     * @throws ApfloatRuntimeException
+     * @see #add(Apfloat)
+     */
+    @Override
+    public Apfloat subtract(Apfloat x) throws ApfloatRuntimeException {
+        if(x instanceof Aprational) {
+            return subtract((Aprational) x);
+        }
+        if(x.precision() == INFINITE) {
+            return subtract(fromApfloat(x));
+        }
+        return precision(x.precision()).subtract(x);
     }
 
     /**
@@ -448,6 +561,25 @@ public class Aprational
     }
 
     /**
+     * Multiplies {@code this} with an apfloat.
+     * @param x The number to be multiplied by this number.
+     *
+     * @return {@code this * x}
+     * @throws ApfloatRuntimeException
+     * @see #add(Apfloat)
+     */
+    @Override
+    public Apfloat multiply(Apfloat x) throws ApfloatRuntimeException {
+        if(x instanceof Aprational) {
+            return multiply((Aprational) x);
+        }
+        if(x.precision() == INFINITE) {
+            return multiply(fromApfloat(x));
+        }
+        return precision(x.precision()).multiply(x);
+    }
+
+    /**
      * Divides two aprational numbers.
      *
      * @param x The number by which this number is to be divided.
@@ -473,6 +605,43 @@ public class Aprational
 
         return new Aprational(numerator().multiply(x.denominator()),
                               denominator().multiply(x.numerator())).reduce();
+    }
+
+    /**
+     * Divides {@code this} by an apfloat.
+     * @param x The number by which this number is to be divided.
+     *
+     * @return {@code this / x}
+     * @throws ArithmeticException if {@code x} is zero
+     * @throws ApfloatRuntimeException
+     * @see #add(Apfloat)
+     */
+    @Override
+    public Apfloat divide(Apfloat x) throws ArithmeticException, ApfloatRuntimeException {
+        if(x instanceof Aprational) {
+            return divide((Aprational) x);
+        }
+        if(x.precision() == INFINITE) {
+            return divide(fromApfloat(x));
+        }
+        return precision(x.precision()).divide(x);
+    }
+
+    /**
+     * Divides an apfloat by {@code this}
+     * @param x The number which is to be divided by this
+     * @return {@code x / this}
+     * @throws ArithmeticException if this is zero
+     * @throws ApfloatRuntimeException
+     */
+    public Apfloat reciprocalDivide(Apfloat x) throws ArithmeticException, ApfloatRuntimeException {
+        if(x instanceof Aprational) {
+            return x.divide(this);
+        }
+        if(x.precision() == INFINITE) {
+            return fromApfloat(x).divide(this);
+        }
+        return x.divide(precision(x.precision()));
     }
 
     /**

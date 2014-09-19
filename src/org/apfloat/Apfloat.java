@@ -615,6 +615,16 @@ public class Apfloat
     }
 
     /**
+     * Returns the reciprocal of {@code this}.
+     * @return {@code 1 / this}
+     * @throws ArithmeticException if {@code this} is zero
+     * @throws InfiniteExpansionException if the reciprocal cannot be expanded to {@code this}' {@link #precision()}.
+     */
+    public Apfloat reciprocal() throws ArithmeticException, InfiniteExpansionException {
+        return ApfloatMath.inverseRoot(this, 1);
+    }
+
+    /**
      * Adds two apfloats.
      *
      * @param x The number to be added to this number.
@@ -634,6 +644,9 @@ public class Apfloat
         {
             // 0 + x = x
             return x;
+        }
+        else if (x instanceof Aprational) {
+            return x.add(this);
         }
 
         return addOrSubtract(x, false);
@@ -661,6 +674,9 @@ public class Apfloat
             impl = impl.negate();
 
             return new Apfloat(impl);
+        }
+        else if (x instanceof Aprational) {
+            return x.subtract(this).negate();
         }
 
         return addOrSubtract(x, true);
@@ -725,6 +741,10 @@ public class Apfloat
             // x * 1 = x
             return precision(Math.min(precision(), x.precision()));
         }
+        else if(x instanceof Aprational && !((Aprational) x).denominator().equals(ONE)) {
+            // The second clause is to weed out apints, because we would get an infinite loop
+            return x.multiply(this);
+        }
 
         long targetPrecision = Math.min(precision(),
                                         x.precision());
@@ -762,6 +782,9 @@ public class Apfloat
         {
             // x / 1 = x
             return precision(Math.min(precision(), x.precision()));
+        }
+        else if(x instanceof Aprational) {
+            return ((Aprational) x).reciprocalDivide(this);
         }
 
         long targetPrecision = Math.min(precision(),
@@ -869,6 +892,23 @@ public class Apfloat
         throws ApfloatRuntimeException
     {
         return new Apfloat(this.impl.frac());
+    }
+
+    /**
+     * Attempts to "clean" {@code this} apfloat. This is achieved by trying to add or subtract one <em>epsilon</em> &ndash; which is defined as the least unit representable in {@code this}' {@link #precision() precision} &ndash; and comparing whether the {@link #size() size} has changed significantly &ndash; i.e. at least by 2.
+     * @return A cleaned copy of {@code this}, or {@code this} if a cleaning was not possible.
+     */
+    @Override
+    public Apfloat clean() {
+        if(precision() == Apfloat.INFINITE)
+            return this;
+
+        Apfloat delta = ApfloatMath.pow(new Apfloat(radix(), precision()), scale() - precision());
+        if(add(delta).size() < size() - 1)
+            return add(delta).precision(precision());
+        if(subtract(delta).size() < size() - 1)
+            return subtract(delta).precision(precision());
+        return this;
     }
 
     /**

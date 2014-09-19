@@ -493,6 +493,18 @@ public class Apcomplex
     }
 
     /**
+     * Attempts to "clean" {@code this} apcomplex. This is achieved by cleaning both the {@link #real() real} and {@link #imag() imaginary} part of {@code this} apcomplex.
+     * @see Apfloat#clean()
+     * @return A cleaned copy of {@code this}.
+     */
+    public Apcomplex clean() {
+        return new Apcomplex(
+                real.clean(),
+                imag.clean()
+        );
+    }
+
+    /**
      * Returns the value of the this number as a <code>double</code>.
      * Only takes the real part of this number.
      *
@@ -642,6 +654,19 @@ public class Apcomplex
         throws NumberFormatException, ApfloatRuntimeException
     {
         return new Apcomplex(real().toRadix(radix), imag().toRadix(radix));
+    }
+
+    /**
+     * Determines whether {@code this} apcomplex is "essentially" equal to the {@code other}. Here "essentially" means that the difference between the two numbers vanishes in the lower precision of the two numbers.
+     * @param other The other number to compare to.
+     * @return {@code true} if the two number are "essentially" equal, {@code false} otherwise.
+     */
+    public boolean is(Apcomplex other) {
+        if(precision() > other.precision())
+            return other.is(this);
+
+        other = other.precision(precision());
+        return subtract(other).equals(ZERO);
     }
 
     /**
