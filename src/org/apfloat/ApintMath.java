@@ -415,6 +415,33 @@ public class ApintMath
     }
 
     /**
+     * Binomial coefficient.
+     * @param n "Size of set"
+     * @param k "Size of subset"
+     * @return {@code n} choose {@code k}
+     * @throws java.lang.IllegalArgumentException If any of the parameters is negative.
+     */
+    public static Apint cnk(long n, long k) throws IllegalArgumentException {
+        if(n < 0 || k < 0)
+            throw new IllegalArgumentException();
+
+        Apint res = Apint.ONE;
+
+        if(k < n - k) {
+            for(long i = n; i >= n - k + 1; i--) {
+                res = res.multiply(new Apint(i)).divide(new Apint(n - i + 1));
+            }
+        }
+        else {
+            for(long i = n; i >= k + 1; i--) {
+                res = res.multiply(new Apint(i)).divide(new Apint(n - i + 1));
+            }
+        }
+
+        return res;
+    }
+
+    /**
      * Modular multiplication. Returns <code>a * b % m</code>
      *
      * @param a First argument.
