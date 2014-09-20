@@ -1107,10 +1107,53 @@ public class Apfloat
     {
         long targetPrecision = Math.min(precision(),
                                         x.precision());
-        ApfloatImpl thisImpl = getImpl(targetPrecision),
+
+        if(targetPrecision != INFINITE) {
+            ApfloatImpl thisImpl = getImpl(targetPrecision),
                     xImpl = x.getImpl(targetPrecision);
 
-        return thisImpl.equalDigits(xImpl);
+            return thisImpl.equalDigits(xImpl);
+        }
+        else {
+            if(equals(x))
+                return INFINITE;
+
+            // I know the following will be checked again further down, but the try-catch is quite expensive,
+            // so let's try to weed out the obvious cases out:
+            if(signum() != x.signum())
+                return 0l;
+            if(scale() != x.scale())
+                return 0l;
+
+            try {
+                ApfloatImpl thisImpl = getImpl(targetPrecision),
+                        xImpl = x.getImpl(targetPrecision);
+
+                return thisImpl.equalDigits(xImpl);
+            }
+            catch (InfiniteExpansionException iee) { // Oh, boy!
+                long defaultPrecision = ApfloatContext.getContext().getDefaultPrecision();
+
+                if(defaultPrecision < INFINITE) {
+                    long res = 0;
+                    long newRes = -1;
+
+                    for (long precision = defaultPrecision; newRes != res; precision++) {
+                        res = newRes;
+
+                        ApfloatImpl thisImpl = getImpl(precision),
+                                xImpl = x.getImpl(precision);
+
+                        newRes = thisImpl.equalDigits(xImpl);
+                    }
+
+                    return res;
+                }
+                else {
+                    throw iee;
+                }
+            }
+        }
     }
 
     /**

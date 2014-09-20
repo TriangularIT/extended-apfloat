@@ -373,7 +373,7 @@ class ApfloatHelper
         }
     }
 
-    private static void checkPowPrecision(long targetPrecision)
+    static void checkPowPrecision(long targetPrecision)
         throws InfiniteExpansionException
 
     {
@@ -404,6 +404,11 @@ class ApfloatHelper
     }
 
     public static Apcomplex checkPow(Apcomplex z, Apcomplex w, long targetPrecision)
+            throws ArithmeticException, ApfloatRuntimeException {
+        return checkPow(z, w, targetPrecision, false);
+    }
+
+    public static Apcomplex checkPow(Apcomplex z, Apcomplex w, long targetPrecision, boolean ignoreInfinity)
         throws ArithmeticException, ApfloatRuntimeException
     {
         Apcomplex result = checkPowBasic(z, w, targetPrecision);
@@ -412,12 +417,19 @@ class ApfloatHelper
             return result;
         }
 
-        checkPowPrecision(targetPrecision);
+        if(!ignoreInfinity)
+            checkPowPrecision(targetPrecision);
 
         return null;
     }
 
+
     public static Apfloat checkPow(Apfloat x, Apfloat y, long targetPrecision)
+            throws ArithmeticException, ApfloatRuntimeException {
+        return checkPow(x, y, targetPrecision, false);
+    }
+
+    public static Apfloat checkPow(Apfloat x, Apfloat y, long targetPrecision, boolean ignoreInfinity)
         throws ArithmeticException, ApfloatRuntimeException
     {
         Apcomplex result = checkPowBasic(x, y, targetPrecision);
@@ -430,7 +442,8 @@ class ApfloatHelper
             throw new ArithmeticException("Power of negative number; result would be complex");
         }
 
-        checkPowPrecision(targetPrecision);
+        if(!ignoreInfinity)
+            checkPowPrecision(targetPrecision);
 
         return null;
     }
