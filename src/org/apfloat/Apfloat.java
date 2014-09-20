@@ -471,6 +471,16 @@ public class Apfloat
     }
 
     /**
+     * This number accurate to the default precision. Uses the precision set in {@link ApfloatContext#setDefaultPrecision(long)}.
+     * @return An apfloat with the specified precision and same value as this apfloat.
+     * @see #precision(long)
+     * @see ApfloatContext#setDefaultPrecision(long)
+     */
+    public Apfloat defaultPrecision() {
+        return precision(ApfloatContext.getContext().getDefaultPrecision());
+    }
+
+    /**
      * Returns an apfloat with the same value as this apfloat accurate to the
      * specified precision.<p>
      *
@@ -713,6 +723,26 @@ public class Apfloat
     }
 
     /**
+     * Multiplies {@code this} with a double. This is a convenience-method synonymous to {@code multiply(new Aprational(x))}.
+     * @param x The number to be multiplied by this number.
+     * @return {@code this * x}
+     * @see #multiply(Apfloat)
+     */
+    public Apfloat multiply(double x) {
+        return multiply(new Aprational(x));
+    }
+
+    /**
+     * Multiplies {@code this} with a long. This is a convenience-method synonymous to {@code multiply(new Apint(x))}.
+     * @param x The number to be multiplied by this number.
+     * @return {@code this * x}
+     * @see #multiply(Apfloat)
+     */
+    public Apfloat multiply(long x) {
+        return multiply(new Apint(x));
+    }
+
+    /**
      * Multiplies two apfloats.
      *
      * @param x The number to be multiplied by this number.
@@ -759,6 +789,26 @@ public class Apfloat
     }
 
     /**
+     * Divides {@code this} by a double. This is a convenience-method synonymous to {@code divide(new Aprational(x))}.
+     * @param x The number by which this number is to be divided.
+     * @return {@code this / x}
+     * @see #divide(Apfloat)
+     */
+    public Apfloat divide(double x) throws ArithmeticException {
+        return divide(new Aprational(x));
+    }
+
+    /**
+     * Divides {@code this} by a long. This is a convenience-method synonymous to {@code divide(new Apint(x))}.
+     * @param x The number by which this number is to be divided.
+     * @return {@code this / x}
+     * @see #divide(Apfloat)
+     */
+    public Apfloat divide(long x) throws ArithmeticException {
+        return divide(new Apint(x));
+    }
+
+    /**
      * Divides two apfloats.
      *
      * @param x The number by which this number is to be divided.
@@ -768,7 +818,19 @@ public class Apfloat
      * @exception java.lang.ArithmeticException In case the divisor is zero.
      */
 
-    public Apfloat divide(Apfloat x)
+    public Apfloat divide(Apfloat x) throws ArithmeticException {
+        return divide(x, false);
+    }
+
+    /**
+     * Divides two apfloats.
+     *
+     * @param x The number by which this number is to be divided.
+     * @param forceFloat If {@code true}, the result will be a "true" {@code Apfloat}; otherwise an {@code Aprational} may be returned.
+     * @return {@code this / x}
+     * @throws ArithmeticException In case the divisor is zero.
+     */
+    public Apfloat divide(Apfloat x, boolean forceFloat)
         throws ArithmeticException, ApfloatRuntimeException
     {
         if (x.signum() == 0)
@@ -785,7 +847,7 @@ public class Apfloat
             // x / 1 = x
             return precision(Math.min(precision(), x.precision()));
         }
-        else if(x instanceof Aprational) {
+        else if(!forceFloat && x instanceof Aprational) {
             try {
                 return ((Aprational) x).reciprocalDivide(this);
             }
@@ -797,18 +859,26 @@ public class Apfloat
         long targetPrecision = Math.min(precision(),
                                         x.precision());
 
-        if (x.isShort())
-        {
-            ApfloatImpl thisImpl = getImpl(targetPrecision),
+        try {
+            if (x.isShort()) {
+                ApfloatImpl thisImpl = getImpl(targetPrecision),
                         xImpl = x.getImpl(targetPrecision),
                         impl = thisImpl.divideShort(xImpl);
 
-            return new Apfloat(impl);
+                return new Apfloat(impl);
+            }
+            else {
+                Apfloat inverse = ApfloatMath.inverseRoot(x, 1, targetPrecision);
+                return multiply(inverse);
+            }
         }
-        else
-        {
-            Apfloat inverse = ApfloatMath.inverseRoot(x, 1, targetPrecision);
-            return multiply(inverse);
+        catch (InfiniteExpansionException iee) {
+            long precision = ApfloatContext.getContext().getDefaultPrecision();
+
+            if(precision < Apcomplex.INFINITE)
+                return precision(precision).divide(x, forceFloat);
+            else
+                throw iee;
         }
     }
 

@@ -1454,10 +1454,16 @@ public class ApfloatMath
     {
         long targetPrecision = Math.min(x.precision(), y.precision());
 
-        Apfloat result = ApfloatHelper.checkPow(x, y, targetPrecision);
+        Apfloat result = ApfloatHelper.checkPow(x, y, targetPrecision, true);
         if (result != null)
         {
             return result;
+        }
+
+        if(targetPrecision == Apcomplex.INFINITE) {
+            long precision = ApfloatContext.getContext().getDefaultPrecision();
+            ApfloatHelper.checkPowPrecision(precision);
+            targetPrecision = precision;
         }
 
         // Try to precalculate the needed values just once to the required precision,
@@ -1902,6 +1908,9 @@ public class ApfloatMath
         // Determine working precision
         long maxScale = -Apfloat.INFINITE,
              maxPrec = Apfloat.INFINITE;
+
+        boolean onlyRational = true;
+
         for (int i = 0; i < x.length; i++)
         {
             long oldScale = maxScale,
@@ -1913,6 +1922,12 @@ public class ApfloatMath
                  newScaleDiff = (maxScale - newScale < 0 ? Apfloat.INFINITE : maxScale - newScale);
             maxPrec = Math.min(Util.ifFinite(oldPrec, oldPrec + oldScaleDiff),
                                Util.ifFinite(newPrec, newPrec + newScaleDiff));
+            if(onlyRational && !(x[i] instanceof Aprational))
+                onlyRational = false;
+        }
+
+        if(onlyRational) {
+            return AprationalMath.sum(Arrays.copyOf(x, x.length, Aprational[].class));
         }
 
         // Do not use x.clone() as the array might be of some subclass type, resulting in ArrayStoreException later

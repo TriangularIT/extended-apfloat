@@ -45,6 +45,14 @@ public class Apint
     }
 
     /**
+     * Copies another apint.
+     * @param value Value to copy.
+     */
+    public Apint(Apint value) {
+        this.value = value.value;
+    }
+
+    /**
      * Constructs an apfloat from the specified string.
      * The default radix will be used.<p>
      *

@@ -67,8 +67,37 @@ public class Aprational
         reduce();
     }
 
-    public Aprational(long numerator, long denominator) {
+    /**
+     * Construct an aprational with the specified numerator and denominator. <br/>
+     * This is a convenience-method synonymous to {@code Aprational(new Apint(numerator), new Apint(denominator))}.
+     * @param numerator The numerator.
+     * @param denominator The denominator.
+     *
+     * @exception java.lang.IllegalArgumentException In case the denominator is zero.
+     * @see #Aprational(Apint, Apint)
+     */
+    public Aprational(long numerator, long denominator) throws IllegalArgumentException {
         this(new Apint(numerator), new Apint(denominator));
+    }
+
+    /**
+     * Constructs an aprational equal to the given double. <br/>
+     * This is a convenience-method synonymous to {@code Aprational(String.valueOf(value))}.
+     * @param value The value of the rational.
+     * @see #Aprational(String)
+     */
+    public Aprational(double value) {
+        this(String.valueOf(value));
+    }
+
+    /**
+     * Construct an integer aprational whose denominator is one. <br/>
+     * This is a convenience-method synonymous to {@code Aprational(new Apint(value))}.
+     * @param value The numerator of the number.
+     * @see #Aprational(Apint)
+     */
+    public Aprational(long value) {
+        this(new Apint(value));
     }
 
     /**
@@ -1067,7 +1096,7 @@ public class Aprational
 
                 if (denominator().isShort())
                 {
-                    approx = numerator().precision(precision).divide(denominator());
+                    approx = numerator().precision(precision).divide(denominator(), true);
                     setApprox(approx);
                 }
                 else
