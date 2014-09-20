@@ -40,6 +40,14 @@ public class ApfloatMath
     public static Apfloat pow(Apfloat x, long n)
         throws ArithmeticException, ApfloatRuntimeException
     {
+        if(x instanceof Apint) {
+            return ApintMath.pow((Apint) x, n);
+        }
+
+        if(x instanceof Aprational) {
+            return AprationalMath.pow((Aprational) x, n);
+        }
+
         if (n == 0)
         {
             if (x.signum() == 0)

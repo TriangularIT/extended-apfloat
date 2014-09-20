@@ -280,4 +280,10 @@ public class ApfloatTestNG {
 
         assertTrue(a.is(b));
     }
+
+    @Test
+    public void testPow() throws Exception {
+        assertEquals(ApfloatMath.pow(nums[2], 3), new Aprational(1, 27));
+        assertEquals(ApfloatMath.pow(new Apint(2), 3), new Apint(8));
+    }
 }
