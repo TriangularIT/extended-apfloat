@@ -86,6 +86,16 @@ class GCDHelper
             b = b.mod(a);
         }
 
+        // Check if one not a multiple of other
+        if (a.signum() == 0)
+        {
+            return b;
+        }
+        if (b.signum() == 0)
+        {
+            return a;
+        }
+
         Apint gcd;
         if (Math.max(a.scale(), b.scale()) * Math.log(Math.max(a.radix(), b.radix())) < 80000)
         {
@@ -162,7 +172,7 @@ class GCDHelper
         return abs(scale(gcd, zeros));
     }
 
-    // Based on the "Recursive Binary GCD Algorithm" by Damien Stehlé and Paul Zimmermann.
+    // Based on the "Recursive Binary GCD Algorithm" by Damien StehlÃ© and Paul Zimmermann.
     // Adapted from the algorithm presented in "Modern Computer Arithmetic" v. 0.5.9 by Richard P. Brent and Paul Zimmermann.
     private static HalfGcdType halfBinaryGcd(Apint a, Apint b, long k)
         throws ApfloatRuntimeException

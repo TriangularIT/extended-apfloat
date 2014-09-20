@@ -315,6 +315,21 @@ public class Apint
     }
 
     /**
+     * Multiplies {@code this} apint with an apfloat.
+     * @param x The number to be multiplied by this number.
+     *
+     * @return {@code this + x}
+     * @throws ApfloatRuntimeException
+     * @see Aprational#add(Apfloat)
+     */
+    @Override
+    public Apfloat multiply(Apfloat x) throws ApfloatRuntimeException {
+        if(x instanceof Apint)
+            return this.multiply((Apint) x);
+        return x.multiply(this);
+    }
+
+    /**
      * Divides two apints.
      *
      * @param x The number by which this number is to be divided.

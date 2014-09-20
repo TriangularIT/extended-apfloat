@@ -189,10 +189,9 @@ public class Aprational
      * returned back to the stream.<p>
      *
      * The input must be of one of the formats<p>
-     * <ul>
-     * <li>Any stream accepted by {@link org.apfloat.Apfloat#Apfloat(java.io.PushbackReader)} or</li>
-     * <li><code>numerator [whitespace] "/" [whitespace] denominator</code></li>
-     * </ul>
+     *
+     * <code>integer [whitespace]</code><br>
+     * <code>numerator [whitespace] "/" [whitespace] denominator</code><br>
      *
      * @param in The input stream.
      *
@@ -223,28 +222,22 @@ public class Aprational
     public Aprational(PushbackReader in, int radix)
         throws IOException, NumberFormatException, IllegalArgumentException, ApfloatRuntimeException
     {
-        Apfloat value = new Apfloat(in).toRadix(radix);
+        this.numerator = new Apint(in, radix);
 
-        if(value.frac().equals(ZERO)) {
-            this.numerator = value.truncate();
+        ApfloatHelper.extractWhitespace(in);
 
-            ApfloatHelper.extractWhitespace(in);
-
-            if(!ApfloatHelper.readMatch(in, '/')) {
-                this.denominator = ONES[radix];
-                return;
-            }
-
-            ApfloatHelper.extractWhitespace(in);
-            this.denominator = new Apint(in, radix);
-
-            checkDenominator();
-
-            reduce();
+        if (!ApfloatHelper.readMatch(in, '/'))
+        {
+            this.denominator = ONES[radix];
+            return;
         }
-        else {
-            copy(fromApfloat(value));
-        }
+
+        ApfloatHelper.extractWhitespace(in);
+        this.denominator = new Apint(in, radix);
+
+        checkDenominator();
+
+        reduce();
     }
 
     /**
@@ -498,7 +491,7 @@ public class Aprational
         if(x.precision() == INFINITE) {
             return add(fromApfloat(x));
         }
-        return precision(x.precision()).add(x);
+        return precision(Math.max(x.precision() + x.size() - x.scale(), 1)).add(x);
     }
 
     /**
@@ -532,7 +525,7 @@ public class Aprational
         if(x.precision() == INFINITE) {
             return subtract(fromApfloat(x));
         }
-        return precision(x.precision()).subtract(x);
+        return precision(Math.max(x.precision() + x.size() - x.scale(), 1)).subtract(x);
     }
 
     /**
@@ -618,13 +611,18 @@ public class Aprational
      */
     @Override
     public Apfloat divide(Apfloat x) throws ArithmeticException, ApfloatRuntimeException {
-        if(x instanceof Aprational) {
-            return divide((Aprational) x);
+        try {
+            if(x instanceof Aprational) {
+                return divide((Aprational) x);
+            }
+            if(x.precision() == INFINITE) {
+                return divide(fromApfloat(x));
+            }
+            return precision(x.precision()).divide(x);
         }
-        if(x.precision() == INFINITE) {
-            return divide(fromApfloat(x));
+        catch(OverflowException ex) {
+            return ZERO;
         }
-        return precision(x.precision()).divide(x);
     }
 
     /**

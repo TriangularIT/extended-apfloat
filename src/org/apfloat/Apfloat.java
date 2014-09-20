@@ -621,6 +621,8 @@ public class Apfloat
      * @throws InfiniteExpansionException if the reciprocal cannot be expanded to {@code this}' {@link #precision()}.
      */
     public Apfloat reciprocal() throws ArithmeticException, InfiniteExpansionException {
+        if(precision() == INFINITE)
+            return new Aprational(this).reciprocal();
         return ApfloatMath.inverseRoot(this, 1);
     }
 
@@ -784,7 +786,12 @@ public class Apfloat
             return precision(Math.min(precision(), x.precision()));
         }
         else if(x instanceof Aprational) {
-            return ((Aprational) x).reciprocalDivide(this);
+            try {
+                return ((Aprational) x).reciprocalDivide(this);
+            }
+            catch(OverflowException ex) {
+                return ZERO;
+            }
         }
 
         long targetPrecision = Math.min(precision(),
