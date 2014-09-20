@@ -11,7 +11,8 @@ public class ApfloatTestNG {
     Apfloat[] nums = new Apfloat[] {
             new Apfloat(".5"),
             new Apfloat(".25", Apcomplex.INFINITE),
-            new Aprational(1, 3)
+            new Aprational(1, 3),
+            Apint.ONE
     };
 
 
@@ -31,17 +32,26 @@ public class ApfloatTestNG {
                 {
                         Apint.ONE,
                         new Apfloat(".7"),
-                        new Apfloat(".8")
+                        new Apfloat(".8"),
+                        new Apfloat("1.5")
                 },
                 {
                         null,
                         new Aprational(1, 2),
-                        new Aprational(7, 12)
+                        new Aprational(7, 12),
+                        new Apfloat("1.25")
                 },
                 {
                         null,
                         null,
-                        new Aprational(2, 3)
+                        new Aprational(2, 3),
+                        new Aprational(4, 3)
+                },
+                {
+                        null,
+                        null,
+                        null,
+                        new Apint(2)
                 }
         };
 
@@ -79,14 +89,23 @@ public class ApfloatTestNG {
                 {
                         Apint.ZERO,
                         new Apfloat(".2"),
-                        new Apfloat(".1")
+                        new Apfloat(".1"),
+                        new Apfloat("-.5")
                 },
                 {
                         null,
                         Apint.ZERO,
-                        new Aprational(-1, 12)
+                        new Aprational(-1, 12),
+                        new Apfloat("-.75")
                 },
                 {
+                        null,
+                        null,
+                        Apint.ZERO,
+                        new Aprational(-2, 3)
+                },
+                {
+                        null,
                         null,
                         null,
                         Apint.ZERO
@@ -127,17 +146,26 @@ public class ApfloatTestNG {
                 {
                         new Apfloat(".2"),
                         new Apfloat(".1"),
-                        new Apfloat(".1")
+                        new Apfloat(".1"),
+                        nums[0]
                 },
                 {
                         null,
                         new Aprational(1, 16),
-                        new Aprational(1, 12)
+                        new Aprational(1, 12),
+                        nums[1]
                 },
                 {
                         null,
                         null,
-                        new Aprational(1, 9)
+                        new Aprational(1, 9),
+                        nums[2]
+                },
+                {
+                        null,
+                        null,
+                        null,
+                        nums[3]
                 }
         };
 
@@ -175,17 +203,26 @@ public class ApfloatTestNG {
                 {
                         Apint.ONE,
                         new Apfloat("2"),
-                        new Apfloat("1")
+                        new Apfloat("1"),
+                        nums[0]
                 },
                 {
                         null,
                         Apint.ONE,
-                        new Aprational(3, 4)
+                        new Aprational(3, 4),
+                        nums[1]
                 },
                 {
                         new Apfloat(".6"),
                         null,
-                        Apint.ONE
+                        Apint.ONE,
+                        nums[2]
+                },
+                {
+                        null,
+                        null,
+                        null,
+                        nums[3]
                 }
         };
 
@@ -226,6 +263,8 @@ public class ApfloatTestNG {
         assertEquals(nineNinths.multiply(new Apfloat("1e100", 30)).clean(), new Apfloat("1e100"));
         assertFalse(new Apfloat(".99").clean().equals(Apfloat.ONE));
         assertEquals(new Apfloat(".999").clean(), Apfloat.ONE);
+        assertEquals(new Apfloat("1.001").clean(), Apfloat.ONE);
+        assertEquals(Apfloat.ONE.clean(), Apfloat.ONE);
     }
 
     @Test
