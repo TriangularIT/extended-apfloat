@@ -42,6 +42,7 @@ import java.util.concurrent.*;
  * <ul>
  *   <li><code>builderFactory</code>, name of the class set as in {@link #setBuilderFactory(BuilderFactory)}</li>
  *   <li><code>defaultRadix</code>, set as in {@link #setDefaultRadix(int)}</li>
+ *   <li>{@code defaultPrecision}, set as in {@link #setDefaultPrecision(long)}</li>
  *   <li><code>maxMemoryBlockSize</code>, set as in {@link #setMaxMemoryBlockSize(long)}</li>
  *   <li><code>cacheL1Size</code>, set as in {@link #setCacheL1Size(int)}</li>
  *   <li><code>cacheL2Size</code>, set as in {@link #setCacheL2Size(int)}</li>
@@ -61,6 +62,7 @@ import java.util.concurrent.*;
  * <pre>
  * builderFactory=org.apfloat.internal.IntBuilderFactory
  * defaultRadix=10
+ * defaultPrecision=9223372036854775807
  * maxMemoryBlockSize=50331648
  * cacheL1Size=8192
  * cacheL2Size=262144
@@ -246,6 +248,11 @@ public class ApfloatContext
      */
 
     public static final String CLEANUP_AT_EXIT = "cleanupAtExit";
+
+    /**
+     * Property name for specifying the default precision for conversion of infinitely precise apfloats in lossy functions (such as {@code exp} or {@code log}).
+     */
+    public static final String DEFAULT_PRECISION = "defaultPrecision";
 
     // At system exit, run garbage collection and finalization to clean up temporary files
     private static class CleanupThread
@@ -862,6 +869,26 @@ public class ApfloatContext
     }
 
     /**
+     * Get the default precision to which infinitely precise apfloats are converted in inherently lossy functions – such as {@link ApfloatMath#exp(Apfloat) exp} or {@link ApfloatMath#log(Apfloat) log}.
+     * @return The default precision for this ApfloatContext
+     */
+    public long getDefaultPrecision() {
+        return this.defaultPrecision;
+    }
+
+    /**
+     * Set the default precision.
+     * The default value is 9223372036854775807 = {@link Long#MAX_VALUE} = {@link Apcomplex#INFINITE}.
+     * @param defaultPrecision The default precision for this ApfloatContext
+     * @see #getDefaultPrecision()
+     */
+    public void setDefaultPrecision(long defaultPrecision) {
+        this.properties.setProperty(DEFAULT_PRECISION, String.valueOf(defaultPrecision));
+
+        this.defaultPrecision = defaultPrecision;
+    }
+
+    /**
      * Get the value of a property as string.
      * The name of the property can be any of the constants defined above.
      *
@@ -968,6 +995,10 @@ public class ApfloatContext
             else if (propertyName.equals(CLEANUP_AT_EXIT))
             {
                 setCleanupAtExit(Boolean.parseBoolean(propertyValue));
+            }
+            else if (propertyName.equals(DEFAULT_PRECISION))
+            {
+                setDefaultPrecision(Long.parseLong(propertyValue));
             }
             else
             {
@@ -1271,6 +1302,7 @@ public class ApfloatContext
     private volatile Object sharedMemoryLock = new Object();
     private volatile ExecutorService executorService = ApfloatContext.defaultExecutorService;
     private volatile ConcurrentHashMap<String, Object> attributes = new ConcurrentHashMap<String, Object>();
+    private volatile long defaultPrecision;
 
     static
     {
@@ -1312,6 +1344,7 @@ public class ApfloatContext
         ApfloatContext.defaultProperties.setProperty(FILE_INITIAL_VALUE, "0");
         ApfloatContext.defaultProperties.setProperty(FILE_SUFFIX, ".ap");
         ApfloatContext.defaultProperties.setProperty(CLEANUP_AT_EXIT, "true");
+        ApfloatContext.defaultProperties.setProperty(DEFAULT_PRECISION, String.valueOf(Apcomplex.INFINITE));
 
         // Set combination of default properties and properties specified in the resource bundle
         ApfloatContext.globalContext = new ApfloatContext(loadProperties());

@@ -188,6 +188,8 @@ public class ApfloatMath
     public static Apfloat inverseRoot(Apfloat x, long n)
         throws ArithmeticException, ApfloatRuntimeException
     {
+        x = ApfloatHelper.avoidInfiniteExpansion(x);
+
         return inverseRoot(x, n, x.precision());
     }
 
@@ -1153,6 +1155,8 @@ public class ApfloatMath
             return Apfloat.ZERO;
         }
 
+        x = ApfloatHelper.avoidInfiniteExpansion(x);
+
         // Calculate the log using 1 / radix <= x < 1 and the log addition formula
         // because the agm converges badly for big x.
 
@@ -1310,6 +1314,8 @@ public class ApfloatMath
         {
             return new Apfloat(1, Apfloat.INFINITE, radix);
         }
+
+        x = ApfloatHelper.avoidInfiniteExpansion(x);
 
         long targetPrecision = x.precision(),
              precision,

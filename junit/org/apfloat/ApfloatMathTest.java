@@ -793,6 +793,13 @@ public class ApfloatMathTest
         {
             // OK; can't calculate this to infinite precision
         }
+
+        ApfloatContext.getContext().setDefaultPrecision(50);
+
+        assertEquals("default precision", ApfloatMath.exp(new Apfloat(2)).precision(), ApfloatContext.getContext().getDefaultPrecision());
+        assertEquals("set precision", ApfloatMath.exp(new Apfloat(2).precision(30)).precision(), 30);
+
+        ApfloatContext.getContext().setDefaultPrecision(Apcomplex.INFINITE);
     }
 
     public static void testLogBase()
@@ -926,6 +933,13 @@ public class ApfloatMathTest
         {
             // OK; can't calculate this to infinite precision
         }
+
+        ApfloatContext.getContext().setDefaultPrecision(50);
+
+        assertEquals("default precision", ApfloatMath.exp(new Apfloat(2)).precision(), ApfloatContext.getContext().getDefaultPrecision());
+        assertEquals("set precision", ApfloatMath.exp(new Apfloat(2).precision(30)).precision(), 30);
+
+        ApfloatContext.getContext().setDefaultPrecision(Apcomplex.INFINITE);
     }
 
     public static void testPow()

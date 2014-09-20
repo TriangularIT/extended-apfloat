@@ -453,6 +453,18 @@ class ApfloatHelper
         return LONG_PRECISION[radix];
     }
 
+    // Tries to avoid the InfiniteExpansionException by limiting
+    // the argument's precision by the default precision of the context.
+    public static Apfloat avoidInfiniteExpansion(Apfloat x) {
+        ApfloatContext ctx = ApfloatContext.getContext();
+
+        if(x.precision() == Apcomplex.INFINITE && ctx.getDefaultPrecision() < Apcomplex.INFINITE) {
+            return x.precision(ctx.getDefaultPrecision());
+        }
+
+        return x;
+    }
+
     // Returns x with precision at most as specified
     public static Apfloat limitPrecision(Apfloat x, long precision)
         throws ApfloatRuntimeException
